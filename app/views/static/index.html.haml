@@ -1,0 +1,11 @@
+%label{:for => "action[title]"} Title
+.bubbling.v1
+  .mask.mask-in-front
+  %textarea.source{:cols => "30", :id => "action[title]", :name => "textarea", :rows => "5", :wrap => "wrap"} Some text and {{InputHere}}
+  
+%label{:for => "action[desc]"} Description
+.bubbling.v2
+  %textarea.source{:cols => "30", :id => "action[desc]", :name => "textarea", :rows => "5", :wrap => "wrap"} {{Time}} at {{Location}}
+  .mask.mask-behind
+  
+%textarea{:placeholder => 'Escape?'}
