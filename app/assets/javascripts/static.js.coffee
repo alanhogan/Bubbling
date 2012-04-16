@@ -21,7 +21,7 @@
     @bubbleReplacement = "<span class='bubbling-bubble'><span class='bubbling-invis-brackets'>{{</span>$1<span class='bubbling-invis-brackets'>}}</span></span>"
       
     @copyBubbled = (from, to) ->
-      to.innerHTML = from.innerHTML.replace @bubbleRegex, @bubbleReplacement
+      to.innerHTML = from.value.replace @bubbleRegex, @bubbleReplacement
     @copySize = ($from, $to) ->
       $to.height $from.height()
       $to.width $from.width()
