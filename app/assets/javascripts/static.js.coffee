@@ -32,8 +32,6 @@
       @copyBubbled $source[0], $mask[0]
       @copySize $source, $mask
       
-      console.log settings.maskPosition
-
       # v1 / mask in front
       if settings.maskPosition is 'in front'
         $source.focus => $mask.hide() # for when browser supports pointer-events: none
