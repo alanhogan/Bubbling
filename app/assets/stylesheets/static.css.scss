@@ -15,26 +15,30 @@ img.fit { max-width: 100%;}
   cursor: pointer;
 }
 
-.bubbling {
+.bubbling-unit {
   position: relative;
-  .mask, .source {
-    // Want these to be exactly the same
-    display: block;
-    border: 1px inset #555;
-    color: black;
-    background-color: white;
-    padding: 5px;
-    font-size: 16px;
-    margin: 0;
-    font-family: inherit;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+}
+.bubbling-mask, .bubbling-source {
+  // Want these to be exactly the same
+  display: block;
+  border: 1px inset #555;
+  color: black;
+  background-color: white;
+  padding: 5px;
+  font-size: 16px;
+  margin: 0;
+  font-family: inherit;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: auto;
 }
 .bubbling-bubble {
   @include border-radius(1em);
   background: lightblue;
+}
+.bubbling-erroneous-bubble {
+  color: #c00;
 }
 .bubbling-invis-brackets {
   color: transparent;
@@ -43,29 +47,21 @@ img.fit { max-width: 100%;}
 }
 
 // SIZING AND POSITIONING STUFF
-.bubbling {
+.bubbling-unit {
   z-index: 1;
-  .mask-in-front {
-    z-index: 6;
-  }
-  .source {
+  .bubbling-source {
     z-index: 4;
   }
-  .mask-behind {
+  .bubbling-mask-behind {
     z-index: 2;
   }
 }
 
-// Mask on top
-.bubbling .mask-on-top {
-  pointer-events: none;
-}
-
 // TEMPORARY SIZE HACK just to save time
-.bubbling {
+.bubbling-unit {
   height: 65px;
 }
-.bubbling .source {
+.bubbling-source {
   height: 50px;
   resize: none;
 }
