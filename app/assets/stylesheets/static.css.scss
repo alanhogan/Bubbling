@@ -10,16 +10,8 @@ body, h1, p {
 code, pre {
   font-family: Menlo, "Deja Vu Sans Mono", "Bitstream Vera Sans Mono", Monaco, monospace;
 }
-img.fit { max-width: 100%;}
-.fit, .nofit {
-  cursor: pointer;
-}
 
-.bubbling-unit {
-  position: relative;
-}
-.bubbling-mask, .bubbling-source {
-  // Want these to be exactly the same
+textarea {
   display: block;
   border: 1px inset #555;
   color: black;
@@ -28,11 +20,10 @@ img.fit { max-width: 100%;}
   font-size: 16px;
   margin: 0;
   font-family: inherit;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: auto;
 }
+
+
+// EXAMPLE STYLES
 .bubbling-bubble {
   @include border-radius(1em);
   background: lightblue;
@@ -40,30 +31,5 @@ img.fit { max-width: 100%;}
 .bubbling-erroneous-bubble {
   color: #c00;
 }
-.bubbling-invis-brackets {
-  color: transparent;
-  // If not universally supported, a height of 0 or 1 px 
-  // would probably be a good hack (display inline block?)
-}
 
-// SIZING AND POSITIONING STUFF
-.bubbling-unit {
-  z-index: 1;
-  .bubbling-source {
-    z-index: 4;
-  }
-  .bubbling-mask-behind {
-    z-index: 2;
-  }
-}
-
-// TEMPORARY SIZE HACK just to save time
-.bubbling-unit {
-  height: 65px;
-}
-.bubbling-source {
-  height: 50px;
-  resize: none;
-}
-// END SIZE HACK.
-// @todo: glom
+@import 'bubbling'

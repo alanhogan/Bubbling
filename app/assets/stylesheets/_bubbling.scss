@@ -1,0 +1,18 @@
+
+
+.bubbling-invis-brackets {
+  color: transparent;
+  // If not universally supported, a height of 0 or 1 px 
+  // would probably be a good hack (display inline block?)
+}
+
+// SIZING AND POSITIONING STUFF
+.bubbling-unit {
+  z-index: 1;
+  .bubbling-source {
+    z-index: 4;
+  }
+  .bubbling-mask {
+    z-index: 2;
+  }
+}

@@ -13,4 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require underscore
+//
+//= require jquery.bubble
+//
 //= require_tree .
