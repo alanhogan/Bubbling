@@ -97,21 +97,27 @@
       # copy (basically all) the styles of the textarea to the mask (bubble container).
       
       $source = $(textarea)
-      # Grab positioning information off textarea (in original location)
-      sourceCssPropertiesMap = {}
-      # (should we actually be using .outerWidth, .outerHeight for this div…?)
-      propertiesToMoveToUnit = ['margin', 'box-sizing', 'position', 'top', 'right', 'bottom', 'left', 'width', 'height']
-      sourceCssPropertiesMap[prop] = $source.css(prop) for prop in propertiesToMoveToUnit
-      
+
+      # skip if not textarea.
+      unless textarea.tagName.match /textarea/i
+        window?.console?.error? 'Cannot bubble non-textarea.'
+        return true
+
       # create the wrapper (called 'unit')
       $unit = $('<div></div>').addClass settings.wrapperClassName
+      
+      # Position our unit like the textarea was.
+      propertiesToCopyToUnit = ['margin']
+      unless $source.css('position').match /static/i
+        propertiesToCopyToUnit.push ['position', 'top', 'right', 'bottom', 'left', ]...
+      @copyCssProperties propertiesToCopyToUnit, $source, $unit
+      $unit.css height: $source.outerHeight(), width: $source.outerWidth(), 'border-width': 0, 'padding': 0
+      
       # Reposition textarea inside the new wrapper, and add its class for add'l styling
       $source.before($unit)
       $source.detach().appendTo($unit)
       $source.addClass settings.sourceClassName
 
-      # Apply positioning info previously copied off textarea to unit
-      $unit.css sourceCssPropertiesMap
       # Position new wrapper like the textarea was
       $unit.css('position', 'relative') if $unit.css('position') is 'static'
       #create mask
@@ -123,13 +129,15 @@
       # Both of them need to be positioned properly in their new context:
       $([$mask[0], $source[0]]).css
         position: 'absolute'
-        top: 0
-        left: 0
+        top: 0, bottom: 0
+        left: 0, right: 0
+        width: 'auto', height: 'auto'
+        margin: 0
         overflow: 'auto'
         
       # and make whitespace copy over properly.
       $mask.css 'white-space': 'pre-wrap'
-      @copySize $source, $mask, $unit
+      @copySize $source, $mask#, $unit
       
       $source.focus => $source.css opacity: 1.0
       $source.blur => $source.css opacity: 0.0
@@ -137,7 +145,8 @@
       # on blur, always update mask
       $source.bind 'blur change', =>
         @copyBubbled $source, $mask
-        @copySize $source, $mask, $unit
+        # @todo remove copySize? Do we want to support this at all? Maybe with onResize() event...
+        @copySize $source, $mask#, $unit
         @copyScroll $source[0], $mask[0]
       scrollSoon = _.throttle ( => @copyScroll($source[0], $mask[0])), 20
       $source.bind 'scroll', scrollSoon
