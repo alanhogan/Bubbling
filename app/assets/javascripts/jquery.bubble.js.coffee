@@ -1,5 +1,18 @@
-# Further improvements that could be made include:
-# Namespacing events
+# jQuery.bubble
+# Supports defining liquid template-style tags (like {{Foo}})
+# that are then show as if they were bubbles, without the curly brackets.
+# Also supports detecting improperly created tags, like those missing a brace
+# or using the wrong word (or the wrong case).
+#
+# Note that if you want to allow resizing of bubbled textareas, this
+# plugin will support it automatically, but only if used in conjection with
+# something like Ben Alman’s resize event patch:
+# http://benalman.com/projects/jquery-resize-plugin/
+# This works by periodically watching elements which you have bound
+# a callback on to the resize event, and “manually” fires the resize
+# event when the element changes. It’s necessary beacuse browsers do
+# not (as of early 2012) fire resize events for anything but the window,
+# even if they allow the user to resize the element.
 
 (($) ->
   $.fn.extend bubble: (options) ->
@@ -85,9 +98,15 @@
         @looseCopyBubbled arguments...
       else
         @strictCopyBubbled arguments...
-    @copySize = ($from, to...) ->
+    # kind of a mess but to can be an object with 'match' (straight) and/or 'outerToCss' arrays, or a jQuery object (treated just like)
+    @copySize = ($from, to) ->
       [h, w] = [$from.height(), $from.width()]
-      $to = $(to); $to.height h; $to.width w
+      unless to.match || to.outerToCss
+        to = {match: $to.toArray()}
+      if to.match
+        $to = $(to.match); $to.height h; $to.width w
+      if to.outerToCss
+        $to = $(to.outerToCss); $to.height $from.outerHeight(); $to.width $from.outerWidth()
     @copyScroll = (from, to) ->
       to.scrollTop = from.scrollTop
       
@@ -137,21 +156,26 @@
         
       # and make whitespace copy over properly.
       $mask.css 'white-space': 'pre-wrap'
-      @copySize $source, $mask#, $unit
+      @copySize $source, {match:[$mask]}
       
-      $source.focus => $source.css opacity: 1.0
-      $source.blur => $source.css opacity: 0.0
-      
+      $source.bind 'focus.bubble', => $source.css opacity: 1.0
+      $source.bind 'blur.bubble', => $source.css opacity: 0.0
+
       # on blur, always update mask
-      $source.bind 'blur change', =>
+      $source.bind 'blur.bubble change.bubble', =>
         @copyBubbled $source, $mask
-        # @todo remove copySize? Do we want to support this at all? Maybe with onResize() event...
-        @copySize $source, $mask#, $unit
         @copyScroll $source[0], $mask[0]
+      $source.bind 'resize.bubble', _.throttle( 
+        ( => 
+          @copySize($source, {match:[$mask], outerToCss:[$unit]})
+        ),
+        50
+      )
       scrollSoon = _.throttle ( => @copyScroll($source[0], $mask[0])), 20
-      $source.bind 'scroll', scrollSoon
+      $source.bind 'scroll.bubble', scrollSoon
       
       # init
       if $source.is(":focus") then $source.focus() else $source.blur()
 
+    @ # allow chaining
 ) jQuery
