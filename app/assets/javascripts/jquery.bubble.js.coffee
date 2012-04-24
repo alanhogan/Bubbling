@@ -4,15 +4,44 @@
 # Also supports detecting improperly created tags, like those missing a brace
 # or using the wrong word (or the wrong case).
 #
+# Requirements:
+# jQuery 1.7+
+# Underscore.js
+# jquery.ba-resize (optional; see below.)
+#
 # Note that if you want to allow resizing of bubbled textareas, this
 # plugin will support it automatically, but only if used in conjection with
-# something like Ben Alman’s resize event patch:
+# something like Ben Alman’s resize event patch, jquery.ba-resize.js:
 # http://benalman.com/projects/jquery-resize-plugin/
 # This works by periodically watching elements which you have bound
 # a callback on to the resize event, and “manually” fires the resize
 # event when the element changes. It’s necessary beacuse browsers do
 # not (as of early 2012) fire resize events for anything but the window,
 # even if they allow the user to resize the element.
+#
+# It’s important to note that this plugin manipulates the DOM significantly
+# by moving textareas inside of a new wrapper div (caled the bubbling unit),
+# and also inserts another div which contains the 'bubbled' view (which, 
+# in turn, creates some new span elements).
+# 
+# Some overly specific CSS selectors like .foo > textarea.your-textarea will break.
+# Similarly, unusual styles applied to 'div' and 'span' elements may cause
+# unusal results. You should have no problems if you followed
+# CSS best practices.
+#
+# Bubbling units listen for the custom events 'showBubbles' and 'showRaw' which
+# serve as commands switching the view from bubbled to pure textarea.
+# The bubbling unit will also emit 'showingBubbles' and 'showingRaw' when it switches.
+# By default, it will automatically switch based on focus/blur events,
+# meaning whenever your user interacts with the textarea, they’ll be able to
+# do so and will see the raw code; at all other times, it’ll look nicer.
+# To override this, set the option showBubblesOnBlur to false;
+# you will then want to manually do something like 
+# $('.bubbling-unit').trigger('showBubbles')
+# to bring back the bubbling mode.
+# Note that technically events are internally triggered on the textarea and listed-to
+# on the bubbling unit; thanks to bubbling, this means it doesn’t matter whether you
+# bind or trigger events on the textareas or bubbling units.
 
 (($) ->
   $.fn.extend bubble: (options) ->
@@ -28,6 +57,7 @@
       checkForMalformedBubbles: false
       failedBubbleClassName: 'bubbling-erroneous-bubble'
       failedBubbleBracketsClassName: 'bubbling-failed-brackets'
+      showBubblesOnBlur: true
     settings = $.extend({}, @defaultOptions, options)
     
     @strictBubbleRegex = ///
@@ -158,24 +188,41 @@
       $mask.css 'white-space': 'pre-wrap'
       @copySize $source, {match:[$mask]}
       
-      $source.bind 'focus.bubble', => $source.css opacity: 1.0
-      $source.bind 'blur.bubble', => $source.css opacity: 0.0
-
-      # on blur, always update mask
-      $source.bind 'blur.bubble change.bubble', =>
+      $unit.bind 'showRaw.bubble', => 
+        $unit.data('showingBubbles', false)
+        $source.css 'opacity', 1.0
+        $source.trigger 'showingRaw'
+      $unit.bind 'showBubbles.bubble', =>
+        $unit.data('showingBubbles', true)
+        $source.css 'opacity', 0.0
+        $source.trigger 'showingBubbles'
         @copyBubbled $source, $mask
         @copyScroll $source[0], $mask[0]
+      
+      $source.bind 'focus.bubble', => $source.trigger 'showRaw'
+      if settings.showBubblesOnBlur
+        $source.bind 'blur.bubble', => $source.trigger 'showBubbles'
+      
+
+      # When showing bubbles, always update mask
+      # When text changes, refresh mask
+      $source.bind 'change.bubble', =>
+        @copyBubbled $source, $mask
+        @copyScroll $source[0], $mask[0]
+        
+      # Watch for resize event, if supported (see note)
       $source.bind 'resize.bubble', _.throttle( 
         ( => 
           @copySize($source, {match:[$mask], outerToCss:[$unit]})
         ),
         50
       )
+      # Sync scrolling
       scrollSoon = _.throttle ( => @copyScroll($source[0], $mask[0])), 20
       $source.bind 'scroll.bubble', scrollSoon
       
       # init
-      if $source.is(":focus") then $source.focus() else $source.blur()
+      if $source.is(":focus") then $source.trigger('showRaw') else $source.trigger('showBubbles')
 
     @ # allow chaining
 ) jQuery
