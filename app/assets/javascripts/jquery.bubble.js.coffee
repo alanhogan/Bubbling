@@ -189,10 +189,12 @@
       @copySize $source, {match:[$mask]}
       
       $unit.bind 'showRaw.bubble', => 
+        return unless $unit.data('showingBubbles')
         $unit.data('showingBubbles', false)
         $source.css 'opacity', 1.0
         $source.trigger 'showingRaw'
       $unit.bind 'showBubbles.bubble', =>
+        return if $unit.data('showingBubbles')
         $unit.data('showingBubbles', true)
         $source.css 'opacity', 0.0
         $source.trigger 'showingBubbles'
