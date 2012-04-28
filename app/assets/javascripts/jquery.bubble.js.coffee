@@ -51,7 +51,8 @@
       maskClassName: 'bubbling-mask'
       bubbleClassName: 'bubbling-bubble'
       bubbleBracketsClassName: 'bubbling-invis-brackets'
-      cssPropertiesToCopy: 'padding line-height font color background border box-sizing'.split(' ')
+      # Note you can’t use shorthand properties, per jQuery .css() documentation (but they work in Chrome…)
+      cssPropertiesToCopy: 'padding-top padding-left padding-bottom padding-right line-height font-family font-weight font-style font-variant color background-color background-image border-top-width border-top-style border-top-color border-right-width border-right-style border-right-color border-bottom-width border-bottom-style border-bottom-color border-left-width border-left-style border-left-color border-top-right-radius border-top-left-radius border-bottom-left-radius border-bottom-right-radius box-sizing'.split(' ')
       onlyBubbleTheseWords: false
       matchAllowedWordsCaseSensitively: false
       checkForMalformedBubbles: false
@@ -175,6 +176,7 @@
       @copyBubbled $source, $mask
       # make the mask look just like the textarea
       @copyCssProperties settings.cssPropertiesToCopy, $source, $mask
+
       # Both of them need to be positioned properly in their new context:
       $([$mask[0], $source[0]]).css
         position: 'absolute'
