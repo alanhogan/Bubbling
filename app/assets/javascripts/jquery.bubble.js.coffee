@@ -208,9 +208,9 @@
         $source.bind 'blur.bubble', => $source.trigger 'showBubbles'
       
 
-      # When showing bubbles, always update mask
-      # When text changes, refresh mask
+      # When showing bubbles, update mask on change
       $source.bind 'change.bubble', =>
+        return unless $unit.data('showingBubbles') # for responsiveness while editing
         @copyBubbled $source, $mask
         @copyScroll $source[0], $mask[0]
         
