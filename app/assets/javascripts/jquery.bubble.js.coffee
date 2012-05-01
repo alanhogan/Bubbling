@@ -52,7 +52,7 @@
       bubbleClassName: 'bubbling-bubble'
       bubbleBracketsClassName: 'bubbling-invis-brackets'
       # Note you can’t use shorthand properties, per jQuery .css() documentation (but they work in Chrome…)
-      cssPropertiesToCopy: 'padding-top padding-left padding-bottom padding-right line-height font-family font-weight font-style font-variant color background-color background-image border-top-width border-top-style border-top-color border-right-width border-right-style border-right-color border-bottom-width border-bottom-style border-bottom-color border-left-width border-left-style border-left-color border-top-right-radius border-top-left-radius border-bottom-left-radius border-bottom-right-radius box-sizing'.split(' ')
+      cssPropertiesToCopy: 'padding-top padding-left padding-bottom padding-right line-height font-size font-family font-weight font-style font-variant color background-color background-image border-top-width border-top-style border-top-color border-right-width border-right-style border-right-color border-bottom-width border-bottom-style border-bottom-color border-left-width border-left-style border-left-color border-top-right-radius border-top-left-radius border-bottom-left-radius border-bottom-right-radius box-sizing'.split(' ')
       onlyBubbleTheseWords: false
       matchAllowedWordsCaseSensitively: false
       checkForMalformedBubbles: false
