@@ -135,14 +135,14 @@
       unless to.match || to.outerToCss
         to = {match: to.toArray()}
       if to.match
-        if $.type(to.match) == 'function' 
+        if $.type(to.match) == 'function'
           $to = to.match
-        else 
+        else
           $to = $(to.match)
       if to.outerToCss
-        if $.type(to.outerToCss) == 'function' 
-          $to = to.outerToCss 
-        else 
+        if $.type(to.outerToCss) == 'function'
+          $to = to.outerToCss
+        else
           $to = $(to.outerToCss)
         $to.height $from.outerHeight(); $to.width $from.outerWidth()
         
