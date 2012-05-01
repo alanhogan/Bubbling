@@ -129,15 +129,23 @@
         @looseCopyBubbled arguments...
       else
         @strictCopyBubbled arguments...
-    # kind of a mess but to can be an object with 'match' (straight) and/or 'outerToCss' arrays, or a jQuery object (treated just like)
+    # kind of a mess but 'to' can be an object with 'match' (plain css properties) and/or 'outerToCss' properties, which can a DOM object, an array of DOM objects, or a jQuery collecton; or to can just be one jQuery object.
     @copySize = ($from, to) ->
       [h, w] = [$from.height(), $from.width()]
       unless to.match || to.outerToCss
-        to = {match: $to.toArray()}
+        to = {match: to.toArray()}
       if to.match
-        $to = $(to.match); $to.height h; $to.width w
+        if $.type(to.match) == 'function' 
+          $to = to.match
+        else 
+          $to = $(to.match)
       if to.outerToCss
-        $to = $(to.outerToCss); $to.height $from.outerHeight(); $to.width $from.outerWidth()
+        if $.type(to.outerToCss) == 'function' 
+          $to = to.outerToCss 
+        else 
+          $to = $(to.outerToCss)
+        $to.height $from.outerHeight(); $to.width $from.outerWidth()
+        
     @copyScroll = (from, to) ->
       to.scrollTop = from.scrollTop
       
@@ -188,7 +196,7 @@
         
       # and make whitespace copy over properly.
       $mask.css 'white-space': 'pre-wrap'
-      @copySize $source, {match:[$mask]}
+      @copySize $source, $mask
       
       $unit.bind 'showRaw.bubble', => 
         return unless $unit.data('showingBubbles')
@@ -217,7 +225,7 @@
       # Watch for resize event, if supported (see note)
       $source.bind 'resize.bubble', _.throttle( 
         ( => 
-          @copySize($source, {match:[$mask], outerToCss:[$unit]})
+          @copySize($source, {match: $mask, outerToCss: $unit})
         ),
         50
       )
