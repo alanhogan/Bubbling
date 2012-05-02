@@ -1,6 +1,9 @@
 # jQuery.bubble
+#
+# by Alan Hogan (2012)
+#
 # Supports defining liquid template-style tags (like {{Foo}})
-# that are then show as if they were bubbles, without the curly brackets.
+# that are then shown as bubbles or pills, without the curly brackets.
 # Also supports detecting improperly created tags, like those missing a brace
 # or using the wrong word (or the wrong case).
 #
@@ -166,9 +169,11 @@
       $unit = $('<div></div>').addClass settings.wrapperClassName
       
       # Position our unit like the textarea was.
-      propertiesToCopyToUnit = ['margin']
+      propertiesToCopyToUnit = ['margin-top','margin-right','margin-bottom','margin-left']
+      unless $source.css('display').match /none/i
+        propertiesToCopyToUnit.push 'display'
       unless $source.css('position').match /static/i
-        propertiesToCopyToUnit.push ['position', 'top', 'right', 'bottom', 'left', ]...
+        propertiesToCopyToUnit.push ['position', 'top', 'right', 'bottom', 'left']...
       @copyCssProperties propertiesToCopyToUnit, $source, $unit
       $unit.css height: $source.outerHeight(), width: $source.outerWidth(), 'border-width': 0, 'padding': 0
       
