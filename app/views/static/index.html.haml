@@ -1,24 +1,40 @@
 %h3 Automatic toggling based on interaction
 
 %label{:for => "action[title]"} Title
-%textarea.bubbling{:cols => "30", :id => "action[title]", :name => "textarea", :rows => "5", :wrap => "wrap"} Some text and {{InputHere}} and {{FakeBubble}} and lowercase {{inputHere}}
+%textarea.bubbling{:cols => "30", :id => "action[title]", :rows => "5", :wrap => "wrap"} Some text and {{InputHere}} and {{FakeBubble}} and lowercase {{inputHere}}
   
 %label{:for => "action[desc]"} Description
-%textarea.bubbling{:cols => "30", :id => "action[desc]", :name => "textarea", :rows => "5", :wrap => "wrap"} {{Time}} at {{Location}}
+%textarea.bubbling{:cols => "30", :id => "action[desc]", :rows => "5", :wrap => "wrap"} {{Time}} at {{Location}}
 
   
 %label{:for => "action[notes]"} Notes
-%textarea.bubbling{:cols => "30", :id => "action[notes]", :name => "textarea", :rows => "5", :wrap => "wrap"} {{Date} at {{Time}}
+%textarea.bubbling{:cols => "30", :id => "action[notes]", :rows => "5", :wrap => "wrap"} {{Date} at {{Time}}
+
+
+%textarea{:cols => "30", :id => "on_a_line1", :rows => "5", :wrap => "wrap", :style => 'display: inline-block'} No bubbling. {{None}}. (Display: inline-block)
+%label{:for => "on_a_line1", :display => 'inline'} Side Label
+
+
+%textarea.bubbling{:cols => "30", :id => "on_a_line2", :rows => "5", :wrap => "wrap", :style => 'display: inline-block'} Bubbling. {{Date}}.  (Display: inline-block)
+%label{:for => "on_a_line2", :display => 'inline'} Side Label
+
+
+%h3 “soft focus” … Bubbling display w/ textarea focus
+
+%textarea.bubbling-soft-focus{:cols => "30", :id => "soft_focus", :rows => "5", :wrap => "wrap", :style => 'display: inline-block'} Date: {{Date}}
+%span
+  %a#do_soft_focus{:href=>'#'}
+    Focus in textarea, but in bubble mode
   
 %h3 Maintain raw view until revoked
 
 %label{:for => "action_title2"} Title
-%textarea.bubbling-manual-toggle{:cols => "30", :id => "action_title2", :name => "textarea", :rows => "5", :wrap => "wrap"} {{InputHere}}.
+%textarea.bubbling-manual-toggle{:cols => "30", :id => "action_title2", :rows => "5", :wrap => "wrap"} {{InputHere}}.
 %div
   %button#show_bubbling_title_2 Show Bubbling Above
 
 %label{:for => "action_desc2"} Description
-%textarea.bubbling-manual-toggle{:cols => "30", :id => "action_desc2", :name => "textarea", :rows => "5", :wrap => "wrap"} {{Date}} {{Time}} at {Location}
+%textarea.bubbling-manual-toggle{:cols => "30", :id => "action_desc2", :rows => "5", :wrap => "wrap"} {{Date}} {{Time}} at {Location}
 %div
   %button#show_bubbling_desc_2 Show Bubbling Above
 

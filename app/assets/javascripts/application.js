@@ -15,6 +15,7 @@
 //= require underscore
 //
 //= require jquery.ba-resize
+//= require jquery.interaction-watch
 //= require jquery.bubble
 //
 //= require_tree .

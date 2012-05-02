@@ -58,7 +58,8 @@
       checkForMalformedBubbles: false
       failedBubbleClassName: 'bubbling-erroneous-bubble'
       failedBubbleBracketsClassName: 'bubbling-failed-brackets'
-      showBubblesOnBlur: true
+      showBubblesOnBlur: true # Boolean or a function that will be executed like an event handler
+      showRawOnFocus: true    # & returns a truth value to decide at runtime (true to switch modes).
     settings = $.extend({}, @defaultOptions, options)
     
     @strictBubbleRegex = ///
@@ -211,9 +212,17 @@
         @copyBubbled $source, $mask
         @copyScroll $source[0], $mask[0]
       
-      $source.bind 'focus.bubble', => $source.trigger 'showRaw'
-      if settings.showBubblesOnBlur
+      if settings.showRawOnFocus is true
+        $source.bind 'focus.bubble', -> $source.trigger 'showRaw'
+      else if settings.showRawOnFocus.apply?
+        $source.bind 'focus.bubble', -> 
+          $source.trigger 'showRaw' if settings.showRawOnFocus.apply(@, arguments)          
+        
+      if settings.showBubblesOnBlur is true
         $source.bind 'blur.bubble', => $source.trigger 'showBubbles'
+      else if settings.showBubblesOnBlur.apply?
+        $source.bind 'blur.bubble', -> 
+          $source.trigger 'showBubbles' if settings.showBubblesOnBlur.apply(@, arguments)     
       
 
       # When showing bubbles, update mask on change
