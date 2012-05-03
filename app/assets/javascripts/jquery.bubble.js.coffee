@@ -55,7 +55,7 @@
       bubbleClassName: 'bubbling-bubble'
       bubbleBracketsClassName: 'bubbling-invis-brackets'
       # Note you can’t use shorthand properties, per jQuery .css() documentation (but they work in Chrome…)
-      cssPropertiesToCopy: 'padding-top padding-left padding-bottom padding-right line-height font-size font-family font-weight font-style font-variant color background-color background-image border-top-width border-top-style border-top-color border-right-width border-right-style border-right-color border-bottom-width border-bottom-style border-bottom-color border-left-width border-left-style border-left-color border-top-right-radius border-top-left-radius border-bottom-left-radius border-bottom-right-radius box-sizing'.split(' ')
+      cssPropertiesToCopy: 'padding-top padding-left padding-bottom padding-right min-height max-height line-height font-size font-family font-weight font-style font-variant color background-color background-image box-sizing border-top-width border-top-style border-top-color border-right-width border-right-style border-right-color border-bottom-width border-bottom-style border-bottom-color border-left-width border-left-style border-left-color border-top-right-radius border-top-left-radius border-bottom-left-radius border-bottom-right-radius box-shadow text-shadow'.split(' ')
       onlyBubbleTheseWords: false
       matchAllowedWordsCaseSensitively: false
       checkForMalformedBubbles: false
@@ -169,13 +169,17 @@
       $unit = $('<div></div>').addClass settings.wrapperClassName
       
       # Position our unit like the textarea was.
-      propertiesToCopyToUnit = ['margin-top','margin-right','margin-bottom','margin-left']
+      propertiesToCopyToUnit = 'marginTop marginRight marginBottom marginLeft'.split(' ')
       unless $source.css('display').match /none/i
         propertiesToCopyToUnit.push 'display'
       unless $source.css('position').match /static/i
         propertiesToCopyToUnit.push ['position', 'top', 'right', 'bottom', 'left']...
       @copyCssProperties propertiesToCopyToUnit, $source, $unit
-      $unit.css height: $source.outerHeight(), width: $source.outerWidth(), 'border-width': 0, 'padding': 0
+      $unit.css
+        height: $source.outerHeight(),
+        width: $source.outerWidth(),
+        paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0
+        borderTopWidth: 0, borderRightWidth: 0, borderBottomWidth: 0, borderLeftWidth: 0
       
       # Reposition textarea inside the new wrapper, and add its class for add'l styling
       $source.before($unit)
@@ -196,8 +200,8 @@
         position: 'absolute'
         top: 0, bottom: 0
         left: 0, right: 0
-        width: 'auto', height: 'auto'
-        margin: 0
+        width: null, height: null
+        marginTop: 0, marginRight: 0, marginBottom: 0, marginLeft: 0
         overflow: 'auto'
         
       # and make whitespace copy over properly.
@@ -208,11 +212,13 @@
         return unless $unit.data('showingBubbles')
         $unit.data('showingBubbles', false)
         $source.css 'opacity', 1.0
+        $mask.css 'opacity', 0.0
         $source.trigger 'showingRaw'
       $unit.bind 'showBubbles.bubble', =>
         return if $unit.data('showingBubbles')
         $unit.data('showingBubbles', true)
         $source.css 'opacity', 0.0
+        $mask.css 'opacity', 1.0
         $source.trigger 'showingBubbles'
         @copyBubbled $source, $mask
         @copyScroll $source[0], $mask[0]
